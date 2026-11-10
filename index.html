@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calorie Tracker</title>
+<style>
+:root{--bg:#f2f6f7;--ink:#14232b;--mute:#5c6f78;--line:#d3dde1;--card:#fff;--ok:#0e7c66;--warn:#b4400e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.6rem;margin:0 0 4px}
+h2{font-size:1.1rem;margin:0 0 12px}
+p.sub{color:var(--mute);margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:16px}
+label{display:block;font-size:.85rem;color:var(--mute)}
+input,select,button{font:inherit;padding:8px;border:1px solid var(--line);border-radius:4px;width:100%;background:#fff;color:var(--ink)}
+button{background:var(--ok);color:#fff;border-color:var(--ok);cursor:pointer;font-weight:600}
+button.ghost{background:#fff;color:var(--mute);border-color:var(--line);width:auto;padding:2px 8px;font-weight:400}
+:focus-visible{outline:3px solid #f2b705;outline-offset:1px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));align-items:end}
+.big{font-size:2.4rem;font-weight:700;line-height:1.1}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:10px}
+.stats small{display:block;color:var(--mute)}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
+.bar div{height:100%;background:var(--ok)}
+.warn{color:var(--warn)}
+.note{font-size:.85rem;color:var(--mute)}
+svg{width:100%;height:auto;display:block}
+</style>
+</head>
+<body>
+<main>
+<h1>Calorie Tracker</h1>
+<p class="sub">Set your profile, log food and weight, and see if your numbers match your goal. Data stays in your browser.</p>
+
+<section>
+  <h2>1. Your profile</h2>
+  <div class="grid">
+    <div><label for="sex">Sex</label><select id="sex"><option value="m">Male</option><option value="f">Female</option></select></div>
+    <div><label for="age">Age (years)</label><input id="age" type="number" min="15" max="100"></div>
+    <div><label for="height">Height (cm)</label><input id="height" type="number" min="120" max="230"></div>
+    <div><label for="weight">Weight (kg)</label><input id="weight" type="number" min="30" max="300" step="0.1"></div>
+    <div><label for="activity">Activity</label>
+      <select id="activity">
+        <option value="1.2">Sedentary</option>
+        <option value="1.375">Light (1-3 days/week)</option>
+        <option value="1.55">Moderate (3-5 days/week)</option>
+        <option value="1.725">Hard (6-7 days/week)</option>
+        <option value="1.9">Very hard (physical job + training)</option>
+      </select></div>
+    <div><label for="rate">Goal (kg lost / week)</label>
+      <select id="rate"><option>0.25</option><option selected>0.5</option><option>0.75</option><option>1</option></select></div>
+    <div><button id="saveProfile">Save profile</button></div>
+  </div>
+  <p class="note" id="profileMsg"></p>
+</section>
+
+<section>
+  <h2>2. Today</h2>
+  <div class="stats">
+    <div><small>Daily target</small><span class="big" id="target">-</span></div>
+    <div><small>Eaten</small><span class="big" id="eaten">0</span></div>
+    <div><small>Remaining</small><span class="big" id="left">-</span></div>
+  </div>
+  <div class="bar"><div id="barFill" style="width:0"></div></div>
+  <p class="note" id="macros"></p>
+  <div class="grid" style="margin-top:12px">
+    <div><label for="fname">Food</label><input id="fname" maxlength="60"></div>
+    <div><label for="fkcal">Calories</label><input id="fkcal" type="number" min="0" max="5000"></div>
+    <div><label for="fp">Protein (g)</label><input id="fp" type="number" min="0" max="500" step="0.1"></div>
+    <div><label for="fc">Carbs (g)</label><input id="fc" type="number" min="0" max="1000" step="0.1"></div>
+    <div><label for="ff">Fat (g)</label><input id="ff" type="number" min="0" max="500" step="0.1"></div>
+    <div><button id="addFood">Add food</button></div>
+  </div>
+  <div id="foodList" style="margin-top:12px"></div>
+</section>
+
+<section>
+  <h2>3. Weight</h2>
+  <div class="grid">
+    <div><label for="wdate">Date</label><input id="wdate" type="date"></div>
+    <div><label for="wkg">Weight (kg)</label><input id="wkg" type="number" min="30" max="300" step="0.1"></div>
+    <div><button id="addWeight">Log weight</button></div>
+  </div>
+  <div id="chart" style="margin-top:12px"></div>
+</section>
+
+<section>
+  <h2>4. Analysis (last 7 days)</h2>
+  <div id="analysis" class="note">Save your profile and log some food to see results.</div>
+</section>
+
+<p class="note">Estimates only, not medical advice. Talk to a doctor before a big diet change, especially if you are pregnant, under 18, or have a health condition.</p>
+</main>
+
+<script>
+"use strict";
+// ---------- Data (one place, one key) ----------
+const KEY = "calorie-tracker-v1";
+const KCAL_PER_KG = 7700;                 // approx. energy in 1 kg of body fat
+const FLOOR = { m: 1500, f: 1200 };       // minimum daily calories
+let S = load();
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if (d && Array.isArray(d.foods) && Array.isArray(d.weights)) return d;
+  } catch (e) { /* ignore corrupt data */ }
+  return { profile: null, foods: [], weights: [] };
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert("Could not save data in this browser."); }
+}
+
+// ---------- Helpers ----------
+const $ = id => document.getElementById(id);
+const dayStr = d => d.toLocaleDateString("en-CA");           // YYYY-MM-DD, local time
+const today = () => dayStr(new Date());
+const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return dayStr(d); };
+const round = (n, p = 0) => Number(n.toFixed(p));
+const num = id => parseFloat($(id).value);
+
+// ---------- Calculations (pure functions) ----------
+// Mifflin-St Jeor equation
+function bmr(p) {
+  return 10 * p.weight + 6.25 * p.height - 5 * p.age + (p.sex === "m" ? 5 : -161);
+}
+function plan(p) {
+  const tdee = bmr(p) * p.activity;
+  const wanted = tdee - (p.rate * KCAL_PER_KG) / 7;
+  const target = Math.max(wanted, FLOOR[p.sex]);
+  return { tdee, target, capped: wanted < FLOOR[p.sex], protein: p.weight * 1.6 };
+}
+function avg(list) { return list.reduce((a, b) => a + b, 0) / list.length; }
+
+// ---------- Profile ----------
+function readProfile() {
+  const p = { sex: $("sex").value, age: num("age"), height: num("height"),
+              weight: num("weight"), activity: parseFloat($("activity").value), rate: parseFloat($("rate").value) };
+  if (!(p.age >= 15 && p.age <= 100 && p.height >= 120 && p.height <= 230 && p.weight >= 30 && p.weight <= 300)) return null;
+  return p;
+}
+$("saveProfile").onclick = () => {
+  const p = readProfile();
+  if (!p) { $("profileMsg").textContent = "Check your age (15-100), height (120-230 cm) and weight (30-300 kg)."; return; }
+  S.profile = p; save(); renderAll();
+};
+function fillProfile() {
+  const p = S.profile; if (!p) return;
+  $("sex").value = p.sex; $("age").value = p.age; $("height").value = p.height;
+  $("weight").value = p.weight; $("activity").value = String(p.activity); $("rate").value = String(p.rate);
+}
+
+// ---------- Food ----------
+$("addFood").onclick = () => {
+  const name = $("fname").value.trim(), kcal = num("fkcal");
+  if (!name || !(kcal >= 0)) { alert("Enter a food name and its calories."); return; }
+  S.foods.push({ id: Date.now(), date: today(), name, kcal,
+                 p: num("fp") || 0, c: num("fc") || 0, f: num("ff") || 0 });
+  save();
+  ["fname", "fkcal", "fp", "fc", "ff"].forEach(id => $(id).value = "");
+  renderAll();
+};
+function removeFood(id) { S.foods = S.foods.filter(f => f.id !== id); save(); renderAll(); }
+
+// ---------- Weight ----------
+$("addWeight").onclick = () => {
+  const date = $("wdate").value, kg = num("wkg");
+  if (!date || !(kg >= 30 && kg <= 300)) { alert("Enter a date and a weight between 30 and 300 kg."); return; }
+  S.weights = S.weights.filter(w => w.date !== date);       // one entry per day
+  S.weights.push({ date, kg });
+  S.weights.sort((a, b) => a.date.localeCompare(b.date));
+  save(); $("wkg").value = ""; renderAll();
+};
+
+// 7-day moving average ending at each weigh-in
+function trend() {
+  return S.weights.map(w => {
+    const from = new Date(w.date); from.setDate(from.getDate() - 6);
+    const win = S.weights.filter(x => x.date >= dayStr(from) && x.date <= w.date).map(x => x.kg);
+    return { date: w.date, kg: w.kg, avg: avg(win) };
+  });
+}
+
+// ---------- Rendering ----------
+function renderToday() {
+  const list = S.foods.filter(f => f.date === today());
+  const sum = k => list.reduce((a, f) => a + f[k], 0);
+  const eaten = sum("kcal");
+  $("eaten").textContent = round(eaten);
+  $("macros").textContent = `Protein ${round(sum("p"))} g, carbs ${round(sum("c"))} g, fat ${round(sum("f"))} g` +
+    (S.profile ? `. Protein goal: about ${round(plan(S.profile).protein)} g.` : ".");
+  if (S.profile) {
+    const t = plan(S.profile).target;
+    $("target").textContent = round(t);
+    $("left").textContent = round(t - eaten);
+    $("left").className = "big" + (eaten > t ? " warn" : "");
+    $("barFill").style.width = Math.min(100, (eaten / t) * 100) + "%";
+  }
+  const box = $("foodList"); box.replaceChildren();
+  list.forEach(f => {
+    const row = document.createElement("div"); row.className = "row";
+    const label = document.createElement("span");
+    label.textContent = `${f.name}: ${round(f.kcal)} kcal`;   // textContent keeps user text safe
+    const del = document.createElement("button");
+    del.className = "ghost"; del.textContent = "Remove";
+    del.onclick = () => removeFood(f.id);
+    row.append(label, del); box.append(row);
+  });
+}
+
+function renderChart() {
+  const t = trend(), box = $("chart");
+  if (t.length < 2) { box.textContent = "Log at least two weights to see your trend."; return; }
+  const W = 700, H = 220, pad = 36;
+  const t0 = new Date(t[0].date).getTime(), t1 = new Date(t[t.length - 1].date).getTime() || t0 + 1;
+  const vals = t.flatMap(p => [p.kg, p.avg]);
+  const lo = Math.min(...vals) - 0.5, hi = Math.max(...vals) + 0.5;
+  const x = d => pad + ((new Date(d).getTime() - t0) / Math.max(t1 - t0, 1)) * (W - 2 * pad);
+  const y = v => H - pad - ((v - lo) / (hi - lo)) * (H - 2 * pad);
+  const line = key => t.map(p => `${x(p.date).toFixed(1)},${y(p[key]).toFixed(1)}`).join(" ");
+  box.innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight chart">` +
+    `<text x="4" y="${y(hi) + 12}" font-size="12" fill="#5c6f78">${hi.toFixed(1)}</text>` +
+    `<text x="4" y="${y(lo)}" font-size="12" fill="#5c6f78">${lo.toFixed(1)}</text>` +
+    `<polyline points="${line("kg")}" fill="none" stroke="#9fb3bb" stroke-width="2"/>` +
+    `<polyline points="${line("avg")}" fill="none" stroke="#0e7c66" stroke-width="3"/>` +
+    `</svg><p class="note">Grey: daily weight. Green: 7-day average (use this one).</p>`;
+}
+
+function renderAnalysis() {
+  const box = $("analysis");
+  if (!S.profile) { box.textContent = "Save your profile to see your plan."; return; }
+  const p = plan(S.profile), out = [];
+  out.push(`Estimated maintenance: <b>${round(p.tdee)}</b> kcal/day. Target: <b>${round(p.target)}</b> kcal/day.`);
+  if (p.capped) out.push(`<span class="warn">Your goal pace was capped at the ${FLOOR[S.profile.sex]} kcal safe minimum. Pick a slower pace.</span>`);
+
+  // average intake over days that have food logged (skip empty days)
+  const since = daysAgo(6), byDay = {};
+  S.foods.filter(f => f.date >= since).forEach(f => byDay[f.date] = (byDay[f.date] || 0) + f.kcal);
+  const days = Object.values(byDay);
+  if (days.length) {
+    const a = avg(days), predicted = ((p.tdee - a) * 7) / KCAL_PER_KG;
+    out.push(`Average intake over ${days.length} logged day(s): <b>${round(a)}</b> kcal. ` +
+      `Predicted loss at this pace: <b>${round(predicted, 2)}</b> kg/week.`);
+    if (a > p.target + 150) out.push(`<span class="warn">You are about ${round(a - p.target)} kcal above target.</span>`);
+    else if (a < p.target - 300) out.push(`<span class="warn">You are well below target. Eating too little can cost muscle and energy.</span>`);
+    else out.push("Your intake is on target.");
+  } else out.push("Log food to compare your intake with your target.");
+
+  // real result: this week's average weight vs last week's
+  const wk = (from, to) => S.weights.filter(w => w.date >= daysAgo(from) && w.date <= daysAgo(to)).map(w => w.kg);
+  const now = wk(6, 0), before = wk(13, 7);
+  if (now.length && before.length) {
+    const change = avg(now) - avg(before);
+    out.push(`Actual weight change vs. last week: <b>${change > 0 ? "+" : ""}${round(change, 2)}</b> kg.`);
+  } else out.push("Weigh in this week and last week to see your real trend.");
+  box.innerHTML = out.map(s => `<p style="margin:0 0 8px">${s}</p>`).join("");
+}
+
+function renderAll() { renderToday(); renderChart(); renderAnalysis();
+  $("profileMsg").textContent = S.profile ? "Profile saved." : ""; }
+
+// ---------- Start ----------
+$("wdate").value = today();
+fillProfile();
+renderAll();
+</script>
+</body>
+</html>
