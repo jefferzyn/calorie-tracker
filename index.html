@@ -33,6 +33,12 @@ button.ghost:hover{background:#edf3ef;color:var(--ink)}
 .warn{color:var(--warn)}
 .note{font-size:.85rem;color:var(--mute)}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:34px}.brand{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:900;letter-spacing:-.04em;font-size:1.2rem}.user-chip{display:flex;align-items:center;gap:10px;font-size:.85rem}.avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;font-weight:800}.hero{padding:10px 0 6px}.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ok);font-weight:800}.section-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:14px}.auth{max-width:520px;margin:10vh auto 0}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#edf2ed;padding:4px;border-radius:8px;margin-bottom:18px}.auth-tabs button{background:transparent;color:var(--mute);border:0}.auth-tabs button.active{background:#fff;color:var(--ink);box-shadow:0 2px 7px rgba(0,0,0,.08)}.auth-msg{min-height:22px;color:var(--warn);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.85rem}.form-stack{display:grid;gap:12px}.app-shell{display:none}.meal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:12px}.meal-card{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}.meal-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#dfeae3}.meal-body{padding:13px}.meal-meta{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.pill{display:inline-flex;padding:4px 8px;border-radius:99px;background:#eef4ef;color:var(--ok-dark);font-size:.72rem;font-weight:800}.meal-actions{display:flex;justify-content:space-between;align-items:center;gap:8px}.meal-actions button{width:auto;padding:7px 10px;font-size:.8rem}.source-link{color:var(--ok);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.75rem;font-weight:700}.loading{color:var(--mute);padding:18px 0}
+.meal-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.meal-controls select{width:auto;min-width:145px}.meal-controls button{white-space:nowrap}
+.food-search{display:grid;grid-template-columns:minmax(0,2fr) minmax(120px,1fr) auto;gap:10px;align-items:end}.food-search button{width:auto;white-space:nowrap}.food-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:16px}.food-card{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff}.food-card img{width:62px;height:62px;border-radius:7px;object-fit:cover;background:#eef4ef;flex:0 0 auto}.food-card-body{min-width:0;flex:1}.food-card-title{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.food-card-meta{color:var(--mute);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.75rem;margin:2px 0 7px}.food-card button{width:auto;padding:7px 10px;font-size:.78rem}
+@media (max-width:640px){
+  main{padding:18px 12px 40px}.auth{margin:5vh 12px 0}section{padding:16px;border-radius:10px}.topbar{margin:0 12px 24px;align-items:start}.user-chip{gap:6px}.user-chip #welcomeName{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.user-chip .ghost{padding:6px 8px}.hero{padding-top:2px}.hero h1{font-size:2.25rem}.section-head{display:block}.section-head>div{margin-bottom:12px}.meal-controls{width:100%}.meal-controls select,.meal-controls button{width:100%}.grid{grid-template-columns:1fr 1fr}.grid>div:last-child{grid-column:1/-1}.stats{grid-template-columns:1fr 1fr}.stats>div:last-child{grid-column:1/-1}.big{font-size:2rem}.row{align-items:flex-start}.meal-grid{grid-template-columns:1fr}.meal-card img{aspect-ratio:2/1}input,select,button{min-height:44px}
+  .food-search{grid-template-columns:1fr}.food-search button{width:100%}.food-results{grid-template-columns:1fr}
+}
 svg{width:100%;height:auto;display:block}
 </style>
 </head>
@@ -78,7 +84,7 @@ svg{width:100%;height:auto;display:block}
 </section>
 
 <section id="mealPlan">
-  <div class="section-head"><div><div class="eyebrow">Fresh ideas</div><h2>Meal plan for today</h2><p class="note">Recipe ideas from TheMealDB. Nutrition is estimated from recipe ingredients.</p></div><button id="refreshMeals" class="ghost" type="button">Refresh ideas</button></div>
+  <div class="section-head"><div><div class="eyebrow">Fresh ideas</div><h2>Meal plan for today</h2><p class="note">Recipe ideas from TheMealDB. Nutrition is estimated from recipe ingredients.</p></div><div class="meal-controls"><label for="mealCategory" style="margin:0">Choose type</label><select id="mealCategory"><option value="all">A little of everything</option><option value="Breakfast">Breakfast</option><option value="Vegetarian">Vegetarian</option><option value="Chicken">Chicken</option><option value="Seafood">Seafood</option></select><button id="refreshMeals" class="ghost" type="button">Refresh ideas</button></div></div>
   <div id="mealList" class="meal-grid"><p class="loading">Save your profile to get a plan built around your target.</p></div>
 </section>
 
@@ -100,6 +106,13 @@ svg{width:100%;height:auto;display:block}
     <div><button id="addFood">Add food</button></div>
   </div>
   <div id="foodList" style="margin-top:12px"></div>
+</section>
+
+<section>
+  <div class="section-head"><div><div class="eyebrow">Food database</div><h2>Find a food</h2><p class="note">Search Open Food Facts or scan a barcode number. Values are shown for your selected serving.</p></div></div>
+  <div class="food-search"><div><label for="foodSearch">Food or brand</label><input id="foodSearch" maxlength="80" placeholder="Try oats, yogurt, or bread"></div><div><label for="foodAmount">Serving (g)</label><input id="foodAmount" type="number" min="1" max="2000" value="100"></div><button id="searchFood" type="button">Search foods</button></div>
+  <div class="food-search" style="margin-top:10px;grid-template-columns:minmax(0,2fr) auto"><div><label for="foodBarcode">Barcode</label><input id="foodBarcode" inputmode="numeric" maxlength="20" placeholder="Optional barcode number"></div><button id="lookupBarcode" class="ghost" type="button">Look up barcode</button></div>
+  <p id="foodSearchMsg" class="note" aria-live="polite"></p><div id="foodResults" class="food-results"></div>
 </section>
 
 <section>
@@ -229,6 +242,52 @@ $("addFood").onclick = () => {
 };
 function removeFood(id) { S.foods = S.foods.filter(f => f.id !== id); save(); renderAll(); }
 
+// ---------- Food database ----------
+function productNutrition(product, amount) {
+  const n = product.nutriments || {};
+  const per100 = key => Number(n[`${key}_100g`] ?? n[key] ?? 0) || 0;
+  return { kcal: Math.round(per100("energy-kcal") * amount / 100), p: round(per100("proteins") * amount / 100, 1), c: round(per100("carbohydrates") * amount / 100, 1), f: round(per100("fat") * amount / 100, 1) };
+}
+function productLabel(product) { return product.product_name || product.generic_name || "Unnamed food"; }
+function addDatabaseFood(product) {
+  const amount = Number($("foodAmount").value); if (!(amount >= 1 && amount <= 2000)) { $("foodSearchMsg").textContent = "Choose a serving between 1 and 2,000 grams."; return; }
+  const nutrition = productNutrition(product, amount); if (!nutrition.kcal && !nutrition.p && !nutrition.c && !nutrition.f) { $("foodSearchMsg").textContent = "This product has no usable nutrition values."; return; }
+  S.foods.push({ id: Date.now(), date: today(), name: `${productLabel(product)} (${amount} g)`, ...nutrition }); save(); renderAll(); $("foodSearchMsg").textContent = `${productLabel(product)} was added to today's diary.`;
+}
+function renderFoodResults(products) {
+  const box = $("foodResults"); box.replaceChildren();
+  products.filter(product => productLabel(product) !== "Unnamed food").forEach(product => {
+    const nutrition = productNutrition(product, 100); const card = document.createElement("article"); card.className = "food-card";
+    const image = document.createElement("img"); image.src = product.image_front_small_url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='62' height='62'%3E%3Crect width='100%25' height='100%25' fill='%23eef4ef'/%3E%3C/svg%3E"; image.alt = "";
+    const body = document.createElement("div"); body.className = "food-card-body";
+    const title = document.createElement("div"); title.className = "food-card-title"; title.textContent = productLabel(product);
+    const meta = document.createElement("div"); meta.className = "food-card-meta"; meta.textContent = `${nutrition.kcal} kcal / 100 g${product.brands ? ` · ${product.brands}` : ""}`;
+    const add = document.createElement("button"); add.type = "button"; add.textContent = "Add"; add.onclick = () => addDatabaseFood(product);
+    body.append(title, meta); card.append(image, body, add); box.append(card);
+  });
+  if (!box.children.length) box.innerHTML = '<p class="note">No foods with nutrition data were found. Try a broader search or use quick add above.</p>';
+}
+async function searchFoodDatabase() {
+  const query = $("foodSearch").value.trim(); if (!query) { $("foodSearchMsg").textContent = "Enter a food or brand to search."; return; }
+  $("foodSearchMsg").textContent = "Searching Open Food Facts..."; $("foodResults").replaceChildren();
+  try {
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&fields=product_name,generic_name,brands,nutriments,image_front_small_url,code`;
+    const response = await fetch(url); if (!response.ok) throw new Error("Search failed"); const data = await response.json(); renderFoodResults(data.products || []); $("foodSearchMsg").textContent = `${(data.products || []).length} results from Open Food Facts.`;
+  } catch (error) { $("foodSearchMsg").textContent = "The food database is unavailable right now. You can still use quick add."; }
+}
+async function lookupBarcode() {
+  const barcode = $("foodBarcode").value.trim(); if (!/^\d{6,20}$/.test(barcode)) { $("foodSearchMsg").textContent = "Enter a barcode with 6 to 20 digits."; return; }
+  $("foodSearchMsg").textContent = "Looking up barcode..."; $("foodResults").replaceChildren();
+  try {
+    const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,generic_name,brands,nutriments,image_front_small_url,code`); if (!response.ok) throw new Error("Lookup failed"); const data = await response.json();
+    if (data.status !== 1 || !data.product) { $("foodSearchMsg").textContent = "No product was found for that barcode."; return; }
+    renderFoodResults([data.product]); $("foodSearchMsg").textContent = "Product found. Choose Add to log it.";
+  } catch (error) { $("foodSearchMsg").textContent = "The barcode service is unavailable right now."; }
+}
+$("searchFood").onclick = searchFoodDatabase; $("lookupBarcode").onclick = lookupBarcode;
+$("foodSearch").onkeydown = event => { if (event.key === "Enter") searchFoodDatabase(); };
+$("foodBarcode").onkeydown = event => { if (event.key === "Enter") lookupBarcode(); };
+
 // ---------- Meal planner ----------
 const fallbackMeals = [
   { id: "local-1", strMeal: "Herby chicken grain bowl", strCategory: "Chicken", strMealThumb: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80" },
@@ -246,9 +305,11 @@ async function loadMeals() {
   const box = $("mealList"); if (!S.profile) { box.innerHTML = '<p class="loading">Save your profile to get a plan built around your target.</p>'; return; }
   box.innerHTML = '<p class="loading">Finding recipes for your day...</p>';
   try {
-    const responses = await Promise.all(["Breakfast", "Vegetarian", "Chicken"].map(category => fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`).then(response => response.json())));
-    const meals = responses.map(response => response.meals && response.meals[0]).filter(Boolean);
-    renderMeals(meals.length === 3 ? meals : fallbackMeals);
+    const selected = $("mealCategory").value;
+    const categories = selected === "all" ? ["Breakfast", "Vegetarian", "Chicken"] : [selected];
+    const responses = await Promise.all(categories.map(category => fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`).then(response => response.json())));
+    const meals = selected === "all" ? responses.map(response => response.meals && response.meals[0]).filter(Boolean) : (responses[0].meals || []).slice(0, 3);
+    renderMeals(meals.length ? meals : fallbackMeals);
   } catch (error) { renderMeals(fallbackMeals); }
 }
 function renderMeals(meals) {
@@ -262,6 +323,7 @@ function renderMeals(meals) {
   const note = document.createElement("p"); note.className = "note"; note.textContent = `Your target is ${round(target)} kcal/day, or about ${perMeal} kcal per meal. Recipe nutrition is an estimate; check the source recipe and adjust portions.`; box.append(note);
 }
 $("refreshMeals").onclick = loadMeals;
+$("mealCategory").onchange = loadMeals;
 
 // ---------- Weight ----------
 $("addWeight").onclick = () => {

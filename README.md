@@ -9,6 +9,8 @@ A single-file web app for weight loss. Accounts and tracker data stay in the cur
 - Compares predicted loss (from your intake) to actual loss (from your scale)
 - Creates a local account and keeps each user's tracker data separate
 - Recommends recipe ideas from TheMealDB and estimates calories/macros by meal type
+- Searches Open Food Facts by food or brand and looks up products by barcode
+- Scales database nutrition to a chosen serving size before adding it to the diary
 
 ## Run it
 Open `index.html` in any browser, or serve the folder locally with `python3 -m http.server 8000` and visit `http://localhost:8000`.
@@ -22,3 +24,4 @@ Repo > Settings > Pages > Source: "Deploy from a branch" > Branch: `main` / root
 - Estimates only, not medical advice.
 - Recipe nutrition is estimated for planning; use the linked recipe and adjust portions for more accurate values.
 - TheMealDB is an external service. The meal planner falls back to local suggestions if it is unavailable.
+- Open Food Facts is an external service. Search and barcode errors leave quick add available as a fallback.
