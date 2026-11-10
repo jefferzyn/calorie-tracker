@@ -5,35 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calorie Tracker</title>
 <style>
-:root{--bg:#f2f6f7;--ink:#14232b;--mute:#5c6f78;--line:#d3dde1;--card:#fff;--ok:#0e7c66;--warn:#b4400e}
+:root{--bg:#f4f1eb;--ink:#172a2c;--mute:#657174;--line:#dce1dc;--card:#fffdf9;--ok:#176b5b;--ok-dark:#0f5145;--sun:#e4a72d;--warn:#b4400e;--shadow:0 12px 30px rgba(28,53,49,.08)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
-h1{font-size:1.6rem;margin:0 0 4px}
-h2{font-size:1.1rem;margin:0 0 12px}
-p.sub{color:var(--mute);margin:0 0 20px}
-section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:16px}
-label{display:block;font-size:.85rem;color:var(--mute)}
-input,select,button{font:inherit;padding:8px;border:1px solid var(--line);border-radius:4px;width:100%;background:#fff;color:var(--ink)}
-button{background:var(--ok);color:#fff;border-color:var(--ok);cursor:pointer;font-weight:600}
-button.ghost{background:#fff;color:var(--mute);border-color:var(--line);width:auto;padding:2px 8px;font-weight:400}
+body{margin:0;background:radial-gradient(circle at 90% 0%,#dcebe1 0 18%,transparent 42%),var(--bg);color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}
+main{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
+h1,h2,h3,button,label,input,select,.eyebrow,.pill,.note,.sub,.big,.stat-label,.auth-tabs,.user-chip{font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+h1{font-size:clamp(2rem,4vw,3.8rem);line-height:1;margin:0 0 8px;letter-spacing:-.02em}
+h2{font-size:1.35rem;margin:0 0 5px}
+h3{font-size:1rem;margin:0}
+p.sub{color:var(--mute);margin:0 0 26px;max-width:650px}
+section{background:rgba(255,253,249,.9);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+label{display:block;font-size:.78rem;color:var(--mute);font-weight:700;letter-spacing:.03em;margin-bottom:5px}
+input,select,button{font:inherit;padding:10px 11px;border:1px solid var(--line);border-radius:7px;width:100%;background:#fff;color:var(--ink)}
+button{background:var(--ok);color:#fff;border-color:var(--ok);cursor:pointer;font-weight:700;transition:background .2s,transform .2s}
+button:hover{background:var(--ok-dark);transform:translateY(-1px)}
+button.ghost{background:transparent;color:var(--mute);border-color:var(--line);width:auto;padding:7px 11px;font-weight:700}
+button.ghost:hover{background:#edf3ef;color:var(--ink)}
 :focus-visible{outline:3px solid #f2b705;outline-offset:1px}
 .grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));align-items:end}
-.big{font-size:2.4rem;font-weight:700;line-height:1.1}
+.big{font-size:2.4rem;font-weight:800;line-height:1.1}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
-.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:10px}
-.stats small{display:block;color:var(--mute)}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:18px 0 12px}
+.stats>div{background:#eef4ef;border-radius:9px;padding:14px}
+.stats small{display:block;color:var(--mute);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
-.bar div{height:100%;background:var(--ok)}
+.bar div{height:100%;background:var(--sun);transition:width .4s ease}
 .warn{color:var(--warn)}
 .note{font-size:.85rem;color:var(--mute)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:34px}.brand{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-weight:900;letter-spacing:-.04em;font-size:1.2rem}.user-chip{display:flex;align-items:center;gap:10px;font-size:.85rem}.avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;font-weight:800}.hero{padding:10px 0 6px}.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ok);font-weight:800}.section-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:14px}.auth{max-width:520px;margin:10vh auto 0}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#edf2ed;padding:4px;border-radius:8px;margin-bottom:18px}.auth-tabs button{background:transparent;color:var(--mute);border:0}.auth-tabs button.active{background:#fff;color:var(--ink);box-shadow:0 2px 7px rgba(0,0,0,.08)}.auth-msg{min-height:22px;color:var(--warn);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.85rem}.form-stack{display:grid;gap:12px}.app-shell{display:none}.meal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:12px}.meal-card{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}.meal-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#dfeae3}.meal-body{padding:13px}.meal-meta{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.pill{display:inline-flex;padding:4px 8px;border-radius:99px;background:#eef4ef;color:var(--ok-dark);font-size:.72rem;font-weight:800}.meal-actions{display:flex;justify-content:space-between;align-items:center;gap:8px}.meal-actions button{width:auto;padding:7px 10px;font-size:.8rem}.source-link{color:var(--ok);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:.75rem;font-weight:700}.loading{color:var(--mute);padding:18px 0}
 svg{width:100%;height:auto;display:block}
 </style>
 </head>
 <body>
+<section class="auth" id="authView">
+  <div class="eyebrow">Nourish / personal dashboard</div>
+  <h1>Make food fit your life.</h1>
+  <p class="sub">A private calorie and meal planning space that stays in this browser.</p>
+  <div class="auth-tabs"><button id="loginTab" class="active" type="button">Log in</button><button id="signupTab" type="button">Create account</button></div>
+  <form id="authForm" class="form-stack">
+    <div id="nameField" style="display:none"><label for="authName">Name</label><input id="authName" autocomplete="name"></div>
+    <div><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required></div>
+    <div><label for="authPassword">Password</label><input id="authPassword" type="password" minlength="6" autocomplete="current-password" required></div>
+    <button id="authSubmit" type="submit">Log in</button>
+    <p id="authMsg" class="auth-msg"></p>
+  </form>
+</section>
+<div class="app-shell" id="appShell">
+<header class="topbar"><div class="brand">nourish<span style="color:var(--sun)">.</span></div><div class="user-chip"><span id="welcomeName"></span><span class="avatar" id="avatar">N</span><button class="ghost" id="logout" type="button">Log out</button></div></header>
 <main>
-<h1>Calorie Tracker</h1>
-<p class="sub">Set your profile, log food and weight, and see if your numbers match your goal. Data stays in your browser.</p>
+<div class="hero"><div class="eyebrow">Your daily rhythm</div><h1>Good food, made simpler.</h1><p class="sub">Set your profile, track what you eat, and get meal ideas that fit your calorie target.</p></div>
 
 <section>
   <h2>1. Your profile</h2>
@@ -55,6 +75,11 @@ svg{width:100%;height:auto;display:block}
     <div><button id="saveProfile">Save profile</button></div>
   </div>
   <p class="note" id="profileMsg"></p>
+</section>
+
+<section id="mealPlan">
+  <div class="section-head"><div><div class="eyebrow">Fresh ideas</div><h2>Meal plan for today</h2><p class="note">Recipe ideas from TheMealDB. Nutrition is estimated from recipe ingredients.</p></div><button id="refreshMeals" class="ghost" type="button">Refresh ideas</button></div>
+  <div id="mealList" class="meal-grid"><p class="loading">Save your profile to get a plan built around your target.</p></div>
 </section>
 
 <section>
@@ -94,24 +119,36 @@ svg{width:100%;height:auto;display:block}
 
 <p class="note">Estimates only, not medical advice. Talk to a doctor before a big diet change, especially if you are pregnant, under 18, or have a health condition.</p>
 </main>
+</div>
 
 <script>
 "use strict";
 // ---------- Data (one place, one key) ----------
 const KEY = "calorie-tracker-v1";
+const USERS_KEY = "calorie-tracker-users-v1";
+const SESSION_KEY = "calorie-tracker-session-v1";
 const KCAL_PER_KG = 7700;                 // approx. energy in 1 kg of body fat
 const FLOOR = { m: 1500, f: 1200 };       // minimum daily calories
+let currentUser = localStorage.getItem(SESSION_KEY) || "";
+let authMode = "login";
 let S = load();
 
 function load() {
   try {
+    const users = JSON.parse(localStorage.getItem(USERS_KEY) || "{}");
+    if (currentUser && users[currentUser] && users[currentUser].data) return users[currentUser].data;
     const d = JSON.parse(localStorage.getItem(KEY));
     if (d && Array.isArray(d.foods) && Array.isArray(d.weights)) return d;
   } catch (e) { /* ignore corrupt data */ }
   return { profile: null, foods: [], weights: [] };
 }
 function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert("Could not save data in this browser."); }
+  try {
+    if (currentUser) {
+      const users = JSON.parse(localStorage.getItem(USERS_KEY) || "{}");
+      if (users[currentUser]) { users[currentUser].data = S; localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+    } else localStorage.setItem(KEY, JSON.stringify(S));
+  } catch (e) { alert("Could not save data in this browser."); }
 }
 
 // ---------- Helpers ----------
@@ -121,6 +158,33 @@ const today = () => dayStr(new Date());
 const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return dayStr(d); };
 const round = (n, p = 0) => Number(n.toFixed(p));
 const num = id => parseFloat($(id).value);
+
+// ---------- Accounts (local browser session) ----------
+function users() { try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}"); } catch (e) { return {}; } }
+function setAuthMode(mode) {
+  authMode = mode; $("loginTab").classList.toggle("active", mode === "login"); $("signupTab").classList.toggle("active", mode === "signup");
+  $("nameField").style.display = mode === "signup" ? "block" : "none";
+  $("authSubmit").textContent = mode === "signup" ? "Create account" : "Log in";
+  $("authPassword").autocomplete = mode === "signup" ? "new-password" : "current-password"; $("authMsg").textContent = "";
+}
+function showApp() {
+  $("authView").style.display = "none"; $("appShell").style.display = "block";
+  const account = users()[currentUser]; const name = account ? account.name : currentUser.split("@")[0];
+  $("welcomeName").textContent = `Hi, ${name}`; $("avatar").textContent = name.charAt(0).toUpperCase(); fillProfile(); renderAll(); loadMeals();
+}
+function showAuth() { $("authView").style.display = "block"; $("appShell").style.display = "none"; }
+$("loginTab").onclick = () => setAuthMode("login");
+$("signupTab").onclick = () => setAuthMode("signup");
+$("authForm").onsubmit = event => {
+  event.preventDefault(); const email = $("authEmail").value.trim().toLowerCase(); const password = $("authPassword").value; const name = $("authName").value.trim(); const all = users();
+  if (authMode === "signup") {
+    if (!name) { $("authMsg").textContent = "Add your name to create an account."; return; }
+    if (all[email]) { $("authMsg").textContent = "That email already has an account. Log in instead."; return; }
+    all[email] = { name, password, data: { profile: null, foods: [], weights: [] } }; localStorage.setItem(USERS_KEY, JSON.stringify(all));
+  } else if (!all[email] || all[email].password !== password) { $("authMsg").textContent = "Email or password is not correct."; return; }
+  currentUser = email; localStorage.setItem(SESSION_KEY, currentUser); S = load(); showApp();
+};
+$("logout").onclick = () => { save(); currentUser = ""; localStorage.removeItem(SESSION_KEY); showAuth(); };
 
 // ---------- Calculations (pure functions) ----------
 // Mifflin-St Jeor equation
@@ -164,6 +228,40 @@ $("addFood").onclick = () => {
   renderAll();
 };
 function removeFood(id) { S.foods = S.foods.filter(f => f.id !== id); save(); renderAll(); }
+
+// ---------- Meal planner ----------
+const fallbackMeals = [
+  { id: "local-1", strMeal: "Herby chicken grain bowl", strCategory: "Chicken", strMealThumb: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80" },
+  { id: "local-2", strMeal: "Mediterranean chickpea salad", strCategory: "Vegetarian", strMealThumb: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80" },
+  { id: "local-3", strMeal: "Salmon with greens", strCategory: "Seafood", strMealThumb: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=700&q=80" }
+];
+function estimateMeal(meal, index) {
+  const text = `${meal.strMeal} ${meal.strCategory || ""}`.toLowerCase();
+  let kcal = text.includes("salad") || text.includes("vegetarian") ? 440 : text.includes("seafood") || text.includes("fish") ? 510 : text.includes("chicken") ? 560 : 590;
+  kcal += (meal.idMeal || meal.id || "").toString().split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % 70 - 35;
+  const protein = Math.round(kcal * (text.includes("vegetarian") || text.includes("salad") ? .07 : .1));
+  return { kcal: Math.max(300, kcal), p: protein, c: Math.round(kcal * .12), f: Math.round(kcal * .035), slot: ["Breakfast", "Lunch", "Dinner"][index] || "Meal" };
+}
+async function loadMeals() {
+  const box = $("mealList"); if (!S.profile) { box.innerHTML = '<p class="loading">Save your profile to get a plan built around your target.</p>'; return; }
+  box.innerHTML = '<p class="loading">Finding recipes for your day...</p>';
+  try {
+    const responses = await Promise.all(["Breakfast", "Vegetarian", "Chicken"].map(category => fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`).then(response => response.json())));
+    const meals = responses.map(response => response.meals && response.meals[0]).filter(Boolean);
+    renderMeals(meals.length === 3 ? meals : fallbackMeals);
+  } catch (error) { renderMeals(fallbackMeals); }
+}
+function renderMeals(meals) {
+  const target = S.profile ? plan(S.profile).target : 1800; const perMeal = Math.round(target / 3); const box = $("mealList"); box.replaceChildren();
+  meals.forEach((meal, index) => {
+    const nutrition = estimateMeal(meal, index); const card = document.createElement("article"); card.className = "meal-card";
+    card.innerHTML = `<img src="${meal.strMealThumb}" alt="${meal.strMeal}"><div class="meal-body"><div class="eyebrow">${nutrition.slot}</div><h3>${meal.strMeal}</h3><div class="meal-meta"><span class="pill">${nutrition.kcal} kcal</span><span class="pill">${nutrition.p}g protein</span><span class="pill">${nutrition.c}g carbs</span><span class="pill">${nutrition.f}g fat</span></div><div class="meal-actions"><a class="source-link" href="https://www.themealdb.com/meal/${meal.idMeal || meal.id}" target="_blank" rel="noreferrer">View recipe</a><button type="button">Add to log</button></div></div>`;
+    card.querySelector("button").onclick = () => { S.foods.push({ id: Date.now() + index, date: today(), name: meal.strMeal, kcal: nutrition.kcal, p: nutrition.p, c: nutrition.c, f: nutrition.f }); save(); renderAll(); };
+    box.append(card);
+  });
+  const note = document.createElement("p"); note.className = "note"; note.textContent = `Your target is ${round(target)} kcal/day, or about ${perMeal} kcal per meal. Recipe nutrition is an estimate; check the source recipe and adjust portions.`; box.append(note);
+}
+$("refreshMeals").onclick = loadMeals;
 
 // ---------- Weight ----------
 $("addWeight").onclick = () => {
@@ -265,8 +363,7 @@ function renderAll() { renderToday(); renderChart(); renderAnalysis();
 
 // ---------- Start ----------
 $("wdate").value = today();
-fillProfile();
-renderAll();
+if (currentUser && users()[currentUser]) showApp(); else showAuth();
 </script>
 </body>
 </html>
