@@ -1,4 +1,4 @@
-# calorie-tracker
+# Calorie Tracker
 
 A single-file web app for weight loss. No server, no sign-up, no dependencies. Your data stays in your browser (localStorage).
 
